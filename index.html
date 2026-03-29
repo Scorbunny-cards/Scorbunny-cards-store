@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scorbunny's Cards | Premium extensions</title>
+<style>
+:root {
+    --neon-purple: #c9a7eb;
+    --bg-dark: #13132c;
+    --text-main: #ffffff;
+    --transition-prop: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    --navbar-height: 80px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body, html {
+    width: 100%;
+    height: 100%;
+    color: var(--text-main);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+    opacity: 0;
+    transform: scale(1.02);
+    animation: fadeInPage 1.2s forwards ease-out;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+body {
+    background: 
+        linear-gradient(to bottom, rgba(10,10,25,0.2), rgba(10,10,25,0.95)),
+        url("bg1.png") center top / cover no-repeat fixed;
+    background-color: #0b0b1f;
+}
+
+body.page-exit {
+    opacity: 0;
+    transform: scale(0.98);
+}
+
+@keyframes fadeInPage {
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* --- THE SPACE ENGINE CANVAS --- */
+#space {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    display: block;
+    opacity: 0.85;
+    transition: opacity 0.8s ease;
+}
+
+/* --- RESPONSIVE UI LAYER --- */
+.ui-wrapper {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 40px 5%;
+    pointer-events: none;
+    animation: slideIn 1.2s ease-out forwards;
+}
+
+@keyframes slideIn {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.ui-wrapper * { pointer-events: auto; }
+
+header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.logo { width: 45px; height: auto; transition: transform 0.4s ease; }
+.logo:hover { transform: rotate(10deg) scale(1.05); }
+
+h1 {
+    font-size: clamp(1rem, 4vw, 1.4rem);
+    letter-spacing: 4px;
+    font-weight: 900;
+    text-transform: uppercase;
+    text-shadow: 0 3px 10px rgba(0,0,0,0.8);
+    color: #fff;
+}
+
+/* --- MAIN CONTENT GRID --- */
+main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 60px;
+    flex-grow: 1;
+}
+
+.hero-title {
+    color: var(--neon-purple);
+    font-size: clamp(2rem, 8vw, 3.8rem);
+    line-height: 1.05;
+    margin-bottom: 20px;
+    font-weight: 800;
+    text-transform: uppercase;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: heroFadeIn 1.2s forwards ease-out 0.5s;
+}
+
+@keyframes heroFadeIn {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-desc {
+    font-size: clamp(1rem, 1.2vw, 1.2rem);
+    margin-bottom: 20px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.5;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: heroFadeIn 1s forwards ease-out 0.7s;
+}
+
+/* --- BUTTONS --- */
+.btn {
+    display: inline-block;
+    padding: 16px 45px;
+    background: var(--neon-purple);
+    color: white;
+    text-decoration: none;
+    font-weight: 800;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: var(--transition-prop);
+    box-shadow: 0 12px 35px rgba(209, 56, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    margin-top: 25px;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: heroFadeIn 1s forwards ease-out 0.9s;
+}
+
+.btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 25px 50px rgba(209, 56, 255, 0.5);
+    background: #df6cff;
+}
+
+/* --- CARD ZONE --- */
+.card-zone {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-wrapper {
+    perspective: 2000px;
+    margin-bottom: 30px;
+    width: 100%;
+    max-width: 340px;
+}
+
+.card-container {
+    position: relative;
+    width: 100%;
+    transform-style: preserve-3d;
+    border-radius: 18px;
+    transition: transform 0.15s ease-out;
+}
+
+.card-img {
+    width:100%;
+    border-radius:18px;
+    box-shadow:0 25px 60px rgba(0,0,0,0.6);
+    display:block;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.card-container:hover .card-img {
+    transform: scale(1.02);
+    box-shadow:0 35px 80px rgba(0,0,0,0.75);
+}
+
+/* RAY-TRACED REFLECTION */
+.card-shine {
+    position: absolute;
+    inset: 0;
+    border-radius: 18px;
+    pointer-events: none;
+    z-index: 2;
+
+    background:
+        linear-gradient(
+            120deg,
+            rgba(255,255,255,0.05) 0%,
+            rgba(255,0,150,0.15) 20%,
+            rgba(0,255,255,0.15) 40%,
+            rgba(255,255,0,0.15) 60%,
+            rgba(255,0,150,0.15) 80%,
+            rgba(255,255,255,0.05) 100%
+        );
+
+    background-size: 200% 200%;
+    mix-blend-mode: soft-light; /* KEY CHANGE */
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.card-container:hover .card-shine {
+    opacity: 1;
+}
+
+.card-container:hover .card-shine { opacity: 1; }
+
+footer { margin-top: 40px; }
+footer h2 { font-size: clamp(1.5rem, 5vw, 2.5rem); font-weight: 900; }
+
+/* --- RESPONSIVE BREAKPOINTS --- */
+@media (max-width: 1024px) {
+    main { grid-template-columns: 1fr; text-align: center; gap: 80px; }
+    .hero-desc { margin: 0 auto 40px; }
+    header { justify-content: center; }
+    footer { text-align: center; }
+}
+
+@media (max-width: 480px) {
+    .ui-wrapper { padding: 30px 20px; }
+    .btn { width: 100%; padding: 15px 0; }
+}
+
+#shootingStars {
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    z-index:1;
+}
+
+/* --- MENU BUTTON --- */
+.menu-btn {
+    width: 40px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.menu-btn span {
+    height: 3px;
+    width: 100%;
+    background: white;
+    border-radius: 3px;
+    transition: 0.4s ease;
+}
+
+/* ACTIVE STATE (X animation) */
+.menu-btn.active span:nth-child(1) {
+    transform: translateY(13px) rotate(45deg);
+}
+
+.menu-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-btn.active span:nth-child(3) {
+    transform: translateY(-13px) rotate(-45deg);
+}
+
+.menu-btn:hover span {
+    background: var(--neon-purple);
+}
+
+/* perfectly aligned bars */
+.menu-btn span:nth-child(1) { top: 0; }
+.menu-btn span:nth-child(2) { top: 10px; }
+.menu-btn span:nth-child(3) { top: 20px; }
+
+/* --- OVERLAY (dark background) --- */
+.menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5,5,15,0.65);
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    z-index: 80;
+}
+
+.menu-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* --- MENU PANEL --- */
+.menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(20,20,50,0.9);
+    backdrop-filter: blur(20px);
+    transform: translateY(-100%);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 100;
+    padding: 120px 20px 60px;
+    text-align: center;
+}
+
+.menu.active {
+    transform: translateY(0);
+}
+
+.menu a {
+    display: block;
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    margin: 22px 0;
+    text-decoration: none;
+    color: white;
+    font-weight: 800;
+    letter-spacing: 2px;
+    transition: var(--transition-prop);
+}
+
+.menu a:hover {
+    color: var(--neon-purple);
+    transform: scale(1.08);
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+    .menu-btn {
+        top: 25px;
+        right: 20px;
+    }
+}
+
+/* PAGE SWITCHING */
+#homePage, #cardsPage {
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.page-hidden {
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+}
+
+.page-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* make cards page take same space */
+#cardsPage {
+    flex-grow: 1;
+}
+
+/* --- LOADER --- */
+#loader {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, #1a1a3a, #0b0b1f);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+}
+
+#loader.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.loader-content {
+    text-align: center;
+    color: white;
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+
+.loader-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(255,255,255,0.2);
+    border-top: 3px solid var(--neon-purple);
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* smoother page animation */
+#homePage, #cardsPage {
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+/* --- COLLECTION GRID --- */
+.collection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 40px;
+    padding-top: 20px;
+}
+
+/* --- CARD SLOT --- */
+.slot {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.4s ease;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.6s forwards;
+}
+
+@keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.slot:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+}
+
+/* CARD */
+.slot .card-container {
+    position: relative;
+    width: 100%;
+    transform-style: preserve-3d;
+    margin-bottom: 15px;
+}
+
+.slot img {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+}
+
+/* SHINE */
+.slot .shine {
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    background: radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(255,255,255,0.4), transparent 60%);
+    mix-blend-mode: overlay;
+    opacity: 0;
+    transition: 0.3s;
+}
+
+.card-container:hover .shine {
+    opacity: 1;
+}
+
+/* TEXT */
+.card-name {
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+/* BUTTON */
+.open-btn {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid var(--neon-purple);
+    background: transparent;
+    color: white;
+    border-radius: 8px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.open-btn:hover {
+    background: var(--neon-purple);
+    box-shadow: 0 0 20px rgba(209,56,255,0.4);
+}
+
+.cards-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+}
+
+#searchInput {
+  width: 100%;
+  max-width: 400px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(0,0,0,0.4);
+  color: white;
+  outline: none;
+  backdrop-filter: blur(10px);
+  transition: 0.3s;
+}
+
+#extensionsSearchInput {
+  width: 100%;
+  max-width: 400px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(0,0,0,0.4);
+  color: white;
+  outline: none;
+  backdrop-filter: blur(10px);
+  transition: 0.3s;
+}
+
+#searchInput:focus {
+  border-color: var(--neon-purple);
+  box-shadow: 0 0 15px rgba(201,167,235,0.4);
+}
+
+#extensionsSearchInput:focus {
+  border-color: var(--neon-purple);
+  box-shadow: 0 0 15px rgba(201,167,235,0.4);
+}
+
+#cardsPage, #extensionsPage {
+    width: 100%;
+    position: relative;
+    z-index: 10;
+    padding: 40px 5%;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.collection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 35px;
+}
+
+.cards-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px; /* increased for better spacing */
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .cards-header {
+    justify-content: flex-start;
+    padding-right: 60px; /* leaves space for menu button */
+  }
+
+  #searchInput,
+  #extensionsSearchInput {
+    max-width: 100%;
+    width: calc(100% - 20px);
+  }
+}
+
+@media (max-width: 480px) {
+  .cards-header {
+    padding-right: 70px; /* extra space for smaller screens */
+  }
+
+  #searchInput,
+  #extensionsSearchInput {
+    width: 100%;
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+}
+
+/* --- VINTED PROFILE --- */
+.vinted-profile {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto 50px;
+    padding: 30px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(20px);
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+
+.vinted-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.vinted-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 2px solid var(--neon-purple);
+}
+
+.vinted-profile h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+}
+
+.vinted-profile p {
+    opacity: 0.7;
+    font-size: 0.95rem;
+}
+
+.vinted-btn {
+    margin-top: 20px;
+}
+
+/* --- FEATURED TITLE --- */
+.featured-title {
+    font-size: 1.8rem;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 25px;
+    letter-spacing: 2px;
+}
+
+/* --- CLEAN CARD STYLE --- */
+#vintedGrid .slot {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+#cardsPage, #extensionsPage {
+    position: relative;
+    z-index: 10;
+}
+
+@media (max-width: 768px) {
+
+    /* Vinted profile: push it away from menu */
+    #vintedProfile {
+        margin-top: 30px;
+        z-index: 10;
+        position: relative;
+    }
+}
+
+#closeBtn, .closeBtn, #xBtn {
+    position: relative;
+    z-index: 100;
+    pointer-events: auto;
+}
+
+/* --- NAVBAR --- */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--navbar-height);
+    padding: 0 6%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 9999;
+
+    background: rgba(10, 10, 30, 0.6);
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+}
+
+body {
+    padding-top: var(--navbar-height);
+}
+
+.modal {
+    z-index: 10000;
+}
+
+.card-container,
+.vinted-profile,
+.collection-section {
+    position: relative;
+    z-index: 1;
+}
+
+/* left side (logo + title) */
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.navbar .logo {
+    width: 40px;
+    height: auto;
+}
+
+.navbar h1 {
+    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+    letter-spacing: 3px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+@media (max-width: 480px) {
+    .navbar {
+        padding: 12px 20px;
+    }
+
+    .navbar h1 {
+        font-size: 0.9rem;
+    }
+
+    .navbar .logo {
+        width: 32px;
+    }
+}
+
+</style>
+</head>
+<body>
+
+<div class="global-overlay"></div>
+
+<div id="loader">
+    <div class="loader-content">
+        <div class="loader-spinner"></div>
+        <p>Loading...</p>
+    </div>
+</div>
+
+<!-- MENU PANEL -->
+<div class="menu" id="menu">
+    <a href="#" id="navHome">Home</a>
+    <a href="#" id="navCards">Cards</a>
+    <a href="#" id="navExtensions">Extensions</a>
+</div>
+
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<canvas id="shootingStars"></canvas>
+<canvas id="space"></canvas>
+
+<nav class="navbar">
+    <div class="nav-left">
+        <img src="Logo.png" class="logo">
+        <h1>SCORBUNNYS CARDS</h1>
+    </div>
+
+    <div class="menu-btn" id="menuBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</nav>
+
+<div class="ui-wrapper">
+
+<main id="homePage">
+    <section class="text-side">
+        <h2 class="hero-title">WE TURN POKEMON CARDS INTO ART!</h2>
+        <p class="hero-desc">(by extending them)</p>
+        <p class="hero-desc">Making new card extensions every day. Just go to my channel and comment any card that you want to be turned into art.</p>
+        <a href="https://www.youtube.com/@scorbunnys-cards" target="_blank" class="btn">Youtube</a>
+    </section>
+
+    <section class="card-zone">
+        <div class="card-wrapper" id="card-anchor">
+            <div class="card-container" id="card-ui">
+                <img src="main.jpg" alt="Art" class="card-img">
+                <div class="card-shine" id="shine-layer"></div>
+            </div>
+        </div>
+    </section>
+<footer>
+    <p>Go check out our full collection and</p>
+    <h2>LETS MAKE THIS CARD INTO ART!</h2>
+</footer>
+</main>
+</div> <!-- ✅ CLOSE ui-wrapper HERE -->
+
+<section id="cardsPage" style="display:none;">
+
+    <!-- VINTED PROFILE -->
+    <div class="vinted-profile">
+        <div class="vinted-header">
+            <img src="Logo2.webp" class="vinted-avatar">
+            <div>
+                <h2>@kuboslaav</h2>
+                <p>Premium Pokémon Cards</p>
+            </div>
+        </div>
+
+        <a href="https://www.vinted.sk/member/108885464-kuboslaav" target="_blank" class="btn vinted-btn">
+            View Vinted Profile
+        </a>
+    </div>
+
+    <div class="featured-title">Featured Items</div>
+
+    <div class="collection-grid" id="vintedGrid"></div>
+
+</section>
+
+<section id="extensionsPage" style="display:none;">
+    <div class="cards-header">
+        <input type="text" id="extensionsSearchInput" placeholder="Search extensions..." />
+    </div>
+
+    <div class="collection-grid" id="extensionsGrid"></div>
+</section>
+
+<script>
+
+let cardsLoaded = false;
+
+document.querySelectorAll('a').forEach(link=>{
+    link.addEventListener('click', e=>{
+        // ignore internal nav buttons (they are handled separately)
+        if(
+            link.id === "navHome" || 
+            link.id === "navCards" || 
+            link.id === "navExtensions"
+        ) return;
+
+        if(link.target !== "_blank" && link.getAttribute("href") !== "#"){
+            e.preventDefault();
+            document.body.classList.add('page-exit');
+            setTimeout(()=> window.location = link.href, 600);
+        }
+    });
+});
+
+// --- Original Space Engine & Shooting Stars Script Kept Intact ---
+const canvas = document.getElementById('space');
+const ctx = canvas.getContext('2d');
+let stars = [];
+function init(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;stars=[];for(let i=0;i<250;i++){stars.push({x:Math.random()*canvas.width-canvas.width/2,y:Math.random()*canvas.height-canvas.height/2,z:Math.random()*canvas.width,o:Math.random()})}}
+function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);stars.forEach(s=>{s.z-=0.8;if(s.z<=0)s.z=canvas.width;const x=(s.x/s.z)*canvas.width+canvas.width/2;const y=(s.y/s.z)*canvas.width+canvas.height/2;const size=(1-s.z/canvas.width)*2.5;ctx.fillStyle=`rgba(255,255,255,${s.o})`;ctx.beginPath();ctx.arc(x,y,size,0,Math.PI*2);ctx.fill()});requestAnimationFrame(draw)}
+window.addEventListener('resize', init);
+init(); draw();
+
+const cardUI=document.getElementById('card-ui');
+const anchor=document.getElementById('card-anchor');
+const shine=document.getElementById('shine-layer');
+
+const handleInteraction = e => {
+    const rect = anchor.getBoundingClientRect();
+
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+
+    if (x > 0 && x < rect.width && y > 0 && y < rect.height) {
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotX = (y - centerY) / 12;
+        const rotY = (centerX - x) / 12;
+
+        const shineX = (x / rect.width) * 100;
+        const shineY = (y / rect.height) * 100;
+
+        cardUI.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.05)`;
+
+        /* THIS is the real holo movement */
+        shine.style.backgroundPosition = `${shineX}% ${shineY}%`;
+    }
+};
+
+anchor.addEventListener('mousemove', handleInteraction);
+anchor.addEventListener('touchmove', handleInteraction);
+
+anchor.addEventListener('mouseleave', () => {
+    cardUI.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+    shine.style.backgroundPosition = '50% 50%';
+});
+
+const starCanvas=document.getElementById("shootingStars");
+const starCtx=starCanvas.getContext("2d");
+starCanvas.width=window.innerWidth;
+starCanvas.height=window.innerHeight;
+let shootingStars=[];
+function createStar(){shootingStars.push({x:Math.random()*starCanvas.width,y:Math.random()*starCanvas.height*0.5,length:Math.random()*80+50,speed:Math.random()*12+6,size:Math.random()*2})}
+function drawStars(){starCtx.clearRect(0,0,starCanvas.width,starCanvas.height);shootingStars.forEach((star,i)=>{star.x+=star.speed;star.y+=star.speed*0.3;starCtx.beginPath();starCtx.moveTo(star.x,star.y);starCtx.lineTo(star.x-star.length,star.y-star.length*0.3);starCtx.strokeStyle="rgba(255,255,255,0.8)";starCtx.lineWidth=star.size;starCtx.stroke();if(star.x>starCanvas.width||star.y>starCanvas.height){shootingStars.splice(i,1)}});requestAnimationFrame(drawStars)}
+setInterval(createStar,2000); drawStars();
+window.addEventListener("resize",()=>{starCanvas.width=window.innerWidth;starCanvas.height=window.innerHeight});
+
+const menuBtn = document.getElementById("menuBtn");
+
+menuBtn.addEventListener("click", () => {
+    menuBtn.classList.toggle("active");
+});
+
+const menu = document.getElementById('menu');
+const overlay = document.getElementById('menuOverlay');
+
+function closeMenu(){
+    menuBtn.classList.remove('active');
+    menu.classList.remove('active');
+    overlay.classList.remove('active');
+}
+
+menuBtn.addEventListener('click', () => {
+    menuBtn.classList.toggle('active');
+    menu.classList.toggle('active');
+    overlay.classList.toggle('active');
+});
+
+/* close when clicking outside */
+overlay.addEventListener('click', closeMenu);
+
+const homePage = document.getElementById('homePage');
+const cardsPage = document.getElementById('cardsPage');
+
+const navHome = document.getElementById('navHome');
+const navCards = document.getElementById('navCards');
+
+const loader = document.getElementById('loader');
+
+function showLoader(){
+    loader.classList.add('active');
+}
+
+function hideLoader(){
+    setTimeout(() => {
+        loader.classList.remove('active');
+    }, 500);
+}
+
+/* SWITCH TO CARDS */
+navCards.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    closeMenu();
+    showLoader();
+
+    homePage.classList.add('page-hidden');
+
+    setTimeout(() => {
+        homePage.style.display = 'none';
+        extensionsPage.style.display = 'none';
+
+        // ✅ ADD THIS LINE
+        document.querySelector('.ui-wrapper').style.display = 'none';
+
+        cardsPage.style.display = 'block';
+        cardsPage.classList.remove('page-hidden');
+        cardsPage.classList.add('page-visible');
+
+        requestAnimationFrame(() => {
+            loadVintedItems();
+        });
+
+        hideLoader();
+    }, 500);
+});
+
+/* SWITCH TO HOME */
+navHome.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    closeMenu();
+    showLoader();
+
+    cardsPage.classList.add('page-hidden');
+
+    setTimeout(() => {
+        cardsPage.style.display = 'none';
+        extensionsPage.style.display = 'none';
+
+        // ✅ ADD THIS LINE BACK
+        document.querySelector('.ui-wrapper').style.display = 'flex';
+
+        homePage.style.display = 'grid';
+
+        homePage.classList.remove('page-hidden');
+        homePage.classList.add('page-visible');
+
+        hideLoader();
+    }, 500);
+});
+
+/* --- CARD DATA (ADD HERE ANYTIME) --- */
+let vintedItems = [
+    {
+        name: "Pokemon Espeon & Deoxys GX",
+        file: "Pokemon Espeon & Deoxys GX.webp",
+        link: "https://www.vinted.sk/items/6934862361-pokemon-espeon-deoxys-gx"
+    },
+    {
+        name: "Pokemon Lucario & Melmetal GX",
+        file: "Pokemon Lucario & Melmetal GX.webp",
+        link: "https://www.vinted.sk/items/6934849672-pokemon-lucario-melmetal-gx"
+    },
+    {
+        name: "Pokemon Reshiram & Charizard GX",
+        file: "Pokemon Reshiram & Charizard GX.webp",
+        link: "https://www.vinted.sk/items/6934833540-pokemon-reshiram-charizard-gx"
+    },
+     {
+        name: "Pokemon Charizard & Braixen GX",
+        file: "Pokemon Charizard & Braixen GX.webp",
+        link: "https://www.vinted.sk/items/6934818197-pokemon-charizard-braixen-gx"
+    },
+    {
+        name: "Pokemon Reshiram & Zekrom GX",
+        file: "Pokemon Reshiram & Zekrom GX.webp",
+        link: "https://www.vinted.sk/items/6934786376-pokemon-reshiram-zekrom-gx"
+    },
+    {
+        name: "Pokemon Naganadel & Guzzlord GX",
+        file: "Pokemon Naganadel & Guzzlord GX.webp",
+        link: "https://www.vinted.sk/items/6934764733-pokemon-naganadel-guzzlord-gx"
+    },
+    {
+        name: "Pokemon Muk & alolan Muk",
+        file: "Pokemon Muk & alolan Muk.webp",
+        link: "https://www.vinted.sk/items/6934746251-pokemon-muk-alolan-muk"
+    },
+];
+
+let extensionsLoaded = false;
+
+function loadExtensions() {
+    if (extensionsLoaded) return;
+    extensionsLoaded = true;
+
+    const grid = document.getElementById('extensionsGrid');
+    grid.innerHTML = "";
+
+    extensionsFiles.forEach((card, index) => {
+        const slot = document.createElement('div');
+        slot.className = "slot";
+        slot.style.animationDelay = `${index * 0.05}s`;
+
+        slot.innerHTML = `
+            <div class="card-container">
+                <img src="${card.file}" alt="${card.name}">
+                <div class="shine"></div>
+            </div>
+            <div class="card-name">${card.name}</div>
+            <button class="open-btn" onclick="openExtension('${card.link}')">Vinted</button>
+        `;
+
+        grid.appendChild(slot);
+        setupCardEffect(slot.querySelector('.card-container'));
+    });
+}
+
+/* OPEN PAGE */
+function openCard(name){
+    window.location.href = "card.html?name=" + encodeURIComponent(name);
+}
+
+function setupCardEffect(card) {
+  const shine = card.querySelector('.shine');
+
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotateX = ((y - centerY) / centerY) * -8;
+    const rotateY = ((x - centerX) / centerX) * 8;
+
+    card.style.transform = `
+      perspective(1000px)
+      rotateX(${rotateX}deg)
+      rotateY(${rotateY}deg)
+      scale(1.04)
+    `;
+
+    shine.style.setProperty('--x', `${(x / rect.width) * 100}%`);
+    shine.style.setProperty('--y', `${(y / rect.height) * 100}%`);
+  });
+
+  card.addEventListener('mouseenter', () => {
+    card.style.transition = 'transform 0.15s ease';
+  });
+
+  card.addEventListener('mouseleave', () => {
+    card.style.transition = 'transform 0.5s ease';
+    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+  });
+}
+
+const searchInput = document.getElementById("searchInput");
+
+if (searchInput) {
+  searchInput.addEventListener("input", () => {
+    const query = searchInput.value.toLowerCase();
+    const cards = document.querySelectorAll(".slot");
+
+    cards.forEach(card => {
+      const name = card.querySelector(".card-name").textContent.toLowerCase();
+      card.style.display = name.includes(query) ? "block" : "none";
+    });
+  });
+}
+
+let extensionsFiles = [
+    { name: "Litleo", file: "Fotka lt 1.jpg", link: "https://www.vinted.sk/items/8483982327-extenzia-na-pokemon-kartu" },
+    { name: "Charmander 151", file: "Fotka ch 1.jpg", link: "https://www.vinted.sk/items/8497308965-extenzia-na-pokemon-kartu" }
+];
+
+function openExtension(link){
+    window.open(link, "_blank");
+}
+
+const extensionsPage = document.getElementById('extensionsPage');
+const navExtensions = document.getElementById('navExtensions');
+
+navExtensions.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    closeMenu();
+    showLoader();
+
+    homePage.classList.add('page-hidden');
+    cardsPage.classList.add('page-hidden');
+
+    setTimeout(() => {
+        homePage.style.display = 'none';
+        cardsPage.style.display = 'none';
+
+        document.querySelector('.ui-wrapper').style.display = 'none';
+
+        extensionsPage.style.display = 'block';
+        extensionsPage.classList.add('page-visible');
+
+        requestAnimationFrame(() => {
+            loadExtensions();
+        });
+
+        hideLoader();
+    }, 500);
+});
+
+const extensionsSearchInput = document.getElementById("extensionsSearchInput");
+
+extensionsSearchInput.addEventListener("input", () => {
+  const query = extensionsSearchInput.value.toLowerCase();
+  const cards = document.querySelectorAll("#extensionsGrid .slot");
+
+  cards.forEach(card => {
+    const name = card.querySelector(".card-name").textContent.toLowerCase();
+    card.style.display = name.includes(query) ? "block" : "none";
+  });
+});
+
+let vintedLoaded = false;
+
+function loadVintedItems() {
+    if (vintedLoaded) return;
+    vintedLoaded = true;
+
+    const grid = document.getElementById('vintedGrid');
+    grid.innerHTML = "";
+
+    vintedItems.forEach((item, index) => {
+        const slot = document.createElement('div');
+        slot.className = "slot";
+        slot.style.animationDelay = `${index * 0.05}s`;
+
+        slot.innerHTML = `
+            <div class="card-container">
+                <img src="${item.file}" alt="${item.name}">
+                <div class="shine"></div>
+            </div>
+            <div class="card-name">${item.name}</div>
+            <button class="open-btn" onclick="openExtension('${item.link}')">View on Vinted</button>
+        `;
+
+        grid.appendChild(slot);
+        setupCardEffect(slot.querySelector('.card-container'));
+    });
+}
+
+</script>
+</body>
+</html>
