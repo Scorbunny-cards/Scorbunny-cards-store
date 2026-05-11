@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -57,32 +57,7 @@ body {
 #space { opacity: 0.7; }
 #shootingStars { z-index: 1; }
 
-/* ═══════════════════════════════════════
-   CUSTOM CURSOR
-═══════════════════════════════════════ */
-.cursor-dot {
-    width: 8px; height: 8px;
-    background: var(--purple-bright);
-    border-radius: 50%;
-    position: fixed; pointer-events: none;
-    z-index: 99999;
-    transform: translate(-50%,-50%);
-    transition: transform 0.08s ease, background 0.2s ease;
-    mix-blend-mode: screen;
-}
-.cursor-ring {
-    width: 36px; height: 36px;
-    border: 1.5px solid rgba(201,167,235,0.6);
-    border-radius: 50%;
-    position: fixed; pointer-events: none;
-    z-index: 99998;
-    transform: translate(-50%,-50%);
-    transition: transform 0.18s var(--ease-out), width 0.25s, height 0.25s, border-color 0.2s;
-}
-.cursor-ring.hovered {
-    width: 54px; height: 54px;
-    border-color: var(--purple-bright);
-}
+
 
 /* ═══════════════════════════════════════
    NAVBAR
@@ -786,10 +761,6 @@ body {
 </head>
 <body>
 
-<!-- CURSORS -->
-<div class="cursor-dot" id="cursorDot"></div>
-<div class="cursor-ring" id="cursorRing"></div>
-
 <!-- LOADER -->
 <div id="loader"><div class="loader-ring"></div></div>
 
@@ -905,11 +876,7 @@ body {
                 <h3>Premium Print</h3>
                 <p>Printed on high-quality material that matches the feel and look of original TCG cards. Collector-grade quality.</p>
             </div>
-            <div class="feat-card">
-                <div class="feat-icon">🌍</div>
-                <h3>Ship Worldwide</h3>
-                <p>We ship globally via Vinted. Safe packaging, tracked delivery, and competitive pricing on every order.</p>
-            </div>
+
         </div>
     </section>
 
@@ -977,39 +944,23 @@ body {
 
 /* ─── DATA ─── */
 const vintedItems = [
-    { name:"Pokemon Espeon & Deoxys GX",        file:"Pokemon_Espeon___Deoxys_GX.webp",      link:"https://www.vinted.sk/items/6934862361-pokemon-espeon-deoxys-gx" },
-    { name:"Pokemon Lucario & Melmetal GX",      file:"Pokemon_Lucario___Melmetal_GX.webp",   link:"https://www.vinted.sk/items/6934849672-pokemon-lucario-melmetal-gx" },
-    { name:"Pokemon Reshiram & Charizard GX",    file:"Pokemon_Reshiram___Charizard_GX.webp", link:"https://www.vinted.sk/items/6934833540-pokemon-reshiram-charizard-gx" },
-    { name:"Pokemon Charizard & Braixen GX",     file:"Pokemon_Charizard___Braixen_GX.webp",  link:"https://www.vinted.sk/items/6934818197-pokemon-charizard-braixen-gx" },
-    { name:"Pokemon Reshiram & Zekrom GX",       file:"Pokemon_Reshiram___Zekrom_GX.webp",    link:"https://www.vinted.sk/items/6934786376-pokemon-reshiram-zekrom-gx" },
-    { name:"Pokemon Naganadel & Guzzlord GX",    file:"Pokemon_Naganadel___Guzzlord_GX.webp", link:"https://www.vinted.sk/items/6934764733-pokemon-naganadel-guzzlord-gx" },
-    { name:"Pokemon Muk & Alolan Muk",           file:"Pokemon_Muk___alolan_Muk.webp",        link:"https://www.vinted.sk/items/6934746251-pokemon-muk-alolan-muk" },
+    { name:"Pokemon Espeon & Deoxys GX",        file:"Pokemon Espeon & Deoxys GX.webp",      link:"https://www.vinted.sk/items/6934862361-pokemon-espeon-deoxys-gx" },
+    { name:"Pokemon Lucario & Melmetal GX",      file:"Pokemon Lucario & Melmetal GX.webp",   link:"https://www.vinted.sk/items/6934849672-pokemon-lucario-melmetal-gx" },
+    { name:"Pokemon Reshiram & Charizard GX",    file:"Pokemon Reshiram & Charizard GX.webp", link:"https://www.vinted.sk/items/6934833540-pokemon-reshiram-charizard-gx" },
+    { name:"Pokemon Charizard & Braixen GX",     file:"Pokemon Charizard & Braixen GX.webp",  link:"https://www.vinted.sk/items/6934818197-pokemon-charizard-braixen-gx" },
+    { name:"Pokemon Reshiram & Zekrom GX",       file:"Pokemon Reshiram & Zekrom GX.webp",    link:"https://www.vinted.sk/items/6934786376-pokemon-reshiram-zekrom-gx" },
+    { name:"Pokemon Naganadel & Guzzlord GX",    file:"Pokemon Naganadel & Guzzlord GX.webp", link:"https://www.vinted.sk/items/6934764733-pokemon-naganadel-guzzlord-gx" },
+    { name:"Pokemon Muk & Alolan Muk",           file:"Pokemon Muk & alolan Muk.webp",        link:"https://www.vinted.sk/items/6934746251-pokemon-muk-alolan-muk" },
 ];
 const extensionItems = [
-    { name:"Litleo",          file:"Fotka_lt_1.jpg",          link:"https://www.vinted.sk/items/8483982327-extenzia-na-pokemon-kartu" },
-    { name:"Charmander 151",  file:"Fotka_ch_1.jpg",          link:"https://www.vinted.sk/items/8497308965-extenzia-na-pokemon-kartu" },
-    { name:"Charmeleon 151",  file:"Fotka_charmeleon_1.jpg",  link:"https://www.vinted.sk/items/8555064962-extenzia-na-pokemon-kartu" },
-    { name:"Ralts",           file:"Fotka_ralts_1.jpg",       link:"https://www.vinted.sk/items/8565119117-extenzia-na-pokemon-kartu" },
-    { name:"Bulbasaur",       file:"Fotka_Bulbasaur_1.jpg",   link:"https://www.vinted.sk/items/8570405888-extenzia-na-pokemon-kartu" },
+    { name:"Litleo",          file:"Fotka lt 1.jpg",          link:"https://www.vinted.sk/items/8483982327-extenzia-na-pokemon-kartu" },
+    { name:"Charmander 151",  file:"Fotka ch 1.jpg",          link:"https://www.vinted.sk/items/8497308965-extenzia-na-pokemon-kartu" },
+    { name:"Charmeleon 151",  file:"Fotka charmeleon 1.jpg",  link:"https://www.vinted.sk/items/8555064962-extenzia-na-pokemon-kartu" },
+    { name:"Ralts",           file:"Fotka ralts 1.jpg",       link:"https://www.vinted.sk/items/8565119117-extenzia-na-pokemon-kartu" },
+    { name:"Bulbasaur",       file:"Fotka Bulbasaur 1.jpg",   link:"https://www.vinted.sk/items/8570405888-extenzia-na-pokemon-kartu" },
 ];
 
-/* ─── CUSTOM CURSOR ─── */
-const dot = document.getElementById('cursorDot');
-const ring = document.getElementById('cursorRing');
-let mx=window.innerWidth/2, my=window.innerHeight/2;
-let rx=mx, ry=my;
-document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
-function animCursor(){
-    dot.style.left = mx+'px'; dot.style.top = my+'px';
-    rx += (mx-rx)*0.12; ry += (my-ry)*0.12;
-    ring.style.left = rx+'px'; ring.style.top = ry+'px';
-    requestAnimationFrame(animCursor);
-}
-animCursor();
-document.querySelectorAll('a,button,.slot,.card-3d,.feat-card').forEach(el=>{
-    el.addEventListener('mouseenter',()=>ring.classList.add('hovered'));
-    el.addEventListener('mouseleave',()=>ring.classList.remove('hovered'));
-});
+
 
 /* ─── STAR FIELD ─── */
 const spaceCanvas = document.getElementById('space');
